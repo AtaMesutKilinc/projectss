@@ -38,7 +38,7 @@ public class Customer {
     private String email;
 
 
-    @Length(message = "Maximum 10 min 3",min = 5, max = 10)
+//    @Length(message = "Maximum 10 min 3",min = 5, max = 10)
     @NotBlank(message = "password can not be blank")
 //    @Pattern(message = "Password must contain min one upper,lower letter and 0-9 digit number ",
 //            regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\\\S+$)")

@@ -57,7 +57,7 @@ public class UserDetailService  implements UserDetailsService {
         Optional<Customer> optionalCustomer=customerRepository.findByEmailEqualsIgnoreCase(username);
         //email gidecek. kullanıcaı varmı dönen nesneyi doldur. nesne içindeki password encoderlı halde atılacak.
         //spring security biizim userımızı dikkari almaz userdetails türünde ister.
-        if (optionalAdmin.isPresent()){ //nesne varsa null değilse.
+        if (optionalAdmin.isPresent() && !optionalCustomer.isPresent()){ //nesne varsa null değilse.
             Admin admin= optionalAdmin.get(); //o emaile ait bilgileri getir.
             //securitynin giriş yapan kull rol yönetimini sağlayabilmesi üretilecek lan nesnenin içine kullanıcı rolleri authorize türünde rolü vermemiz lazım.
             UserDetails userDetails=new org.springframework.security.core.userdetails.User(
@@ -67,38 +67,72 @@ public class UserDetailService  implements UserDetailsService {
                     admin.isTokenExpired(),
                     true,
                     true,
-                    roles((List<Role>) admin.getRole())  //todo: hata varmı bak
+                    roles(admin.getRole())  //todo: hata varmı bak
             );
             return userDetails;
-        }else {
-            throw new UsernameNotFoundException("Böyle bir kullanıcı yok"); //403 gibi bir hata
+        }else if(optionalCustomer.isPresent()&& !optionalAdmin.isPresent()){
+            Customer customer= optionalCustomer.get(); //o emaile ait bilgileri getir.
+            //securitynin giriş yapan kull rol yönetimini sağlayabilmesi üretilecek lan nesnenin içine kullanıcı rolleri authorize türünde rolü vermemiz lazım.
+            UserDetails userDetails=new org.springframework.security.core.userdetails.User(
+                    customer.getEmail(),
+                    customer.getPassword(),
+                    customer.isEnabled(),
+                    customer.isTokenExpired(),
+                    true,
+                    true,
+                    roles(customer.getRole())
+            );
+            return userDetails;
+        }
+        else {
+            throw new UsernameNotFoundException("User not found"); //403 gibi bir hata
         }
 
     }
 
-    public Collection roles(List<Role> rolex){
-        //
-        List<GrantedAuthority> ls= new ArrayList<>();   //türü döndermek için buna GrantedAuthority türe ihtiyacımız var.GrantedAuthority --spring securitynin kullanıcı rollerini vermek için
-        for (Role role:rolex){ //rollerin içinde gez
-            ls.add(new SimpleGrantedAuthority(role.getName())); //rol türüne çevirdik içine ekledik listeye collection
-        }
-        return  ls;
-    }
 
-    public ResponseEntity register(Admin admin){//map olmasada olur<Map<REnum,Object>>
+    public Collection roles(Role role ) {
+        List<GrantedAuthority> ls = new ArrayList<>();
+
+        ls.add( new SimpleGrantedAuthority( role.getName() ));
+
+        return ls;
+        }
+
+    public ResponseEntity registerAdmin(Admin admin){
+        //map olmasada olur<Map<REnum,Object>>
         //exceptiıonda sqlde uniqlik varsa burda try cache yazmamız lazımdı şuan
         Optional<Admin> optionalAdmin=adminRepository.findByEmailEqualsIgnoreCase(admin.getEmail());
-        Map<REnum,Object> hm= new LinkedHashMap<>();
+        Map<REnum,Object> hashMap= new LinkedHashMap<>();
         if (!optionalAdmin.isPresent()){//var olup olmadığını kontrol ediyoruz yoksa yaz
             admin.setPassword(encoder().encode(admin.getPassword())); //springin anlıcağı password şekli encoder içinde encode diye bir method var şifreyi gönderince şifreliyor.
             Admin adm=adminRepository.save(admin);
+            hashMap.put(REnum.status,true);
+            hashMap.put(REnum.result,adm);
+            return new ResponseEntity(hashMap, HttpStatus.OK);
+        }else{
+            hashMap.put(REnum.status,false);
+            hashMap.put(REnum.message,"This email "+admin.getEmail() +" has been received");
+            hashMap.put(REnum.result,admin);
+            return new ResponseEntity(hashMap, HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    public ResponseEntity registerCustomer(Customer customer){
+        //map olmasada olur<Map<REnum,Object>>
+        //exceptiıonda sqlde uniqlik varsa burda try cache yazmamız lazımdı şuan
+        Optional<Customer> optionalCustomer=customerRepository.findByEmailEqualsIgnoreCase(customer.getEmail());
+        Map<REnum,Object> hm= new LinkedHashMap<>();
+        if (!optionalCustomer.isPresent()){//var olup olmadığını kontrol ediyoruz yoksa yaz
+            customer.setPassword(encoder().encode(customer.getPassword())); //springin anlıcağı password şekli encoder içinde encode diye bir method var şifreyi gönderince şifreliyor.
+            Customer cus=customerRepository.save(customer);
             hm.put(REnum.status,true);
-            hm.put(REnum.result,adm);
+            hm.put(REnum.result,cus);
             return new ResponseEntity(hm, HttpStatus.OK);
         }else{
             hm.put(REnum.status,false);
-            hm.put(REnum.message,"This email "+admin.getEmail() +" has been received");
-            hm.put(REnum.result,admin);
+            hm.put(REnum.message,"This email "+customer.getEmail() +" has been received");
+            hm.put(REnum.result,customer);
             return new ResponseEntity(hm, HttpStatus.NOT_ACCEPTABLE);
         }
     }
@@ -110,31 +144,42 @@ public class UserDetailService  implements UserDetailsService {
     //auth
     //jwt almak için login işlemi yaparak bu fonk tetiklenmelidir.
     public  ResponseEntity login (Login login){
-        Map<REnum,Object> hm = new LinkedHashMap<>();
+        Map<REnum,Object> hashMap = new LinkedHashMap<>();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     login.getUsername(),login.getPassword()));
             UserDetails userDetails=loadUserByUsername(login.getUsername());
             String jwt= jwtUtil.generateToken(userDetails);
-            hm.put(REnum.status,true);
-            hm.put(REnum.jwt,jwt);
-            hm.put(REnum.result,userJoinRepository.userJoin());
-            return new ResponseEntity(hm,HttpStatus.OK);
+            hashMap.put(REnum.status,true);
+            hashMap.put(REnum.jwt,jwt);
+            return new ResponseEntity(hashMap,HttpStatus.OK);
         }catch (Exception ex){
-            hm.put(REnum.status,false);
-            hm.put(REnum.error,ex.getMessage());
-            return new ResponseEntity(hm,HttpStatus.NOT_ACCEPTABLE);
+            hashMap.put(REnum.status,false);
+            hashMap.put(REnum.error,ex.getMessage());
+            return new ResponseEntity(hashMap,HttpStatus.NOT_ACCEPTABLE);
         }
+
 
     }
 
-    public Admin info(){
+    public Admin infoAdmin(){
         Authentication auth= SecurityContextHolder.getContext().getAuthentication();
         String username=auth.getName();  //usernameler sabit db e gitmeden yaparız böyle
         System.out.println(username);
         Optional<Admin> optionalAdmin=adminRepository.findByEmailEqualsIgnoreCase(username);
         if (optionalAdmin.isPresent()){
             return optionalAdmin.get();
+        }
+        return null;
+    }
+
+    public Customer infoCustomer(){
+        Authentication auth= SecurityContextHolder.getContext().getAuthentication();
+        String username=auth.getName();  //usernameler sabit db e gitmeden yaparız böyle
+        System.out.println(username);
+        Optional<Customer> optionalCustomer=customerRepository.findByEmailEqualsIgnoreCase(username);
+        if (optionalCustomer.isPresent()){
+            return optionalCustomer.get();
         }
         return null;
     }
