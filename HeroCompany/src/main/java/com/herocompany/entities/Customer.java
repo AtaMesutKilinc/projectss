@@ -15,7 +15,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Customer {
+public class Customer extends Base {
     //aşağıdaki attr'ler olmak zorunda
     // UserDetailService içinde bunlara ait methodlar var genellikle bütün login işlemlerinde bu attr ler kullanılır
     @Id
@@ -45,6 +45,7 @@ public class Customer {
     private String password;
     private boolean enabled;
     private boolean tokenExpired;
+    
 
 //    @OneToMany(mappedBy = "customer")
 //    private List<Order> orders;

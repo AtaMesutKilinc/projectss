@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 
 @Entity
 @Data
-public class Admin {
+public class Admin extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

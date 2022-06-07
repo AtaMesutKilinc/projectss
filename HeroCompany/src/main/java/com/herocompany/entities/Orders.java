@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Entity
 @Data
-public class Orders {
+public class Orders extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

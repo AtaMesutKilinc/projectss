@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -75,4 +76,30 @@ public class CustomerService {
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
 
+
+//    public GenericResponse resetPassword(HttpServletRequest request,
+//                                         String userEmail) {
+//        Map<REnum,Object> hashMap =new LinkedHashMap<>();
+//        Optional<Customer> optionalCustomer = customerRepository.findByEmailEqualsIgnoreCase(userEmail);
+//       try {
+//           if (!optionalCustomer.isPresent()) {
+//               hashMap.put(REnum.status,false);
+//               hashMap.put(REnum.message,"Customer is null! try again");
+//               return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
+//
+//           }
+//           String token = UUID.randomUUID().toString();
+//           userService.createPasswordResetTokenForUser(user, token);
+//           mailSender.send(constructResetTokenEmail(getAppUrl(request),
+//                   request.getLocale(), token, user));
+//           return new GenericResponse(
+//                   messages.getMessage("message.resetPasswordEmail", null,
+//                           request.getLocale()));
+//
+//       }catch (Exception ex){
+//           hashMap.put(REnum.status,false);
+//           hashMap.put(REnum.message,ex.getMessage());
+//       }
+//
+//    }
 }

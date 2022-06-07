@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Entity
 @Data
-public class Product {
+public class Product extends Base{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

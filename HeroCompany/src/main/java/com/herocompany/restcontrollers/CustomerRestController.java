@@ -8,7 +8,9 @@ import com.herocompany.services.UserDetailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/customer")
@@ -30,10 +32,10 @@ public class CustomerRestController {
 
     //nesneyi kabul eden bir json dosyası alamız biz bu nesneye dönüştürmemiz lazım.
 
-//    @PostMapping("/login") //auth da olur
-//    public ResponseEntity login (@Valid @RequestBody Login login){
-//        return  userDetailService.login(login);
-//    }
+    @PostMapping("/login") //auth da olur
+    public ResponseEntity login (@Valid @RequestBody Login login){
+        return  userDetailService.login(login);
+    }
 
     @PostMapping("/save")
     public ResponseEntity save(@Valid @RequestBody Customer customer){
@@ -55,4 +57,20 @@ public class CustomerRestController {
         return  customerService.delete(id);
     }
 
+
+//    @PostMapping("/user/resetPassword")
+//    public GenericResponse resetPassword(HttpServletRequest request,
+//                                         @RequestParam("email") String userEmail) {
+//        User user = userService.findUserByEmail(userEmail);
+//        if (user == null) {
+//            throw new UserNotFoundException();
+//        }
+//        String token = UUID.randomUUID().toString();
+//        userService.createPasswordResetTokenForUser(user, token);
+//        mailSender.send(constructResetTokenEmail(getAppUrl(request),
+//                request.getLocale(), token, user));
+//        return new GenericResponse(
+//                messages.getMessage("message.resetPasswordEmail", null,
+//                        request.getLocale()));
+//    }
 }
