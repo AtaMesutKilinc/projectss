@@ -46,8 +46,8 @@ public class Customer {
     private boolean enabled;
     private boolean tokenExpired;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Orders> orders;
+//    @OneToMany(mappedBy = "customer")
+//    private List<Order> orders;
 
     @ManyToOne
     //@JsonIgnore

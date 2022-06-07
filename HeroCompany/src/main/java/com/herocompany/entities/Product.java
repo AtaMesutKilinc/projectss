@@ -1,6 +1,7 @@
 package com.herocompany.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -29,16 +31,18 @@ public class Product {
     private int price;
 
     @ManyToOne
-//    @JsonIgnore
+
     @JoinColumn(name="category_id",referencedColumnName = "id")
     private Category category;
 
 //    @OneToMany (mappedBy = "product",fetch =  FetchType.LAZY)
 //    private List<OrderDetail> orderDetails;
 
-    @ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
+    //@ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
     //user hazırlanırken rollere gitmete çalışıyor . defaultta eagledır. circle a neden oldu .dikkate alma.
     //biz prog ayağa kaldırdığımızda ilk etapta jwt user ı çağıracağımızdan mapped by ı buraya yazıyoruz.
-    private List<Orders> orders;
+
+//    @OneToMany(mappedBy = "product")
+//    private List<OrderDetails> orderDetails;
 
 }

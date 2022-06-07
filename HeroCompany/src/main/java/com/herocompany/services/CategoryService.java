@@ -55,7 +55,7 @@ public class CategoryService {
 
     }
 
-    public ResponseEntity<Map<REnum,Object>> delete(Integer id){
+    public ResponseEntity<Map<REnum,Object>> delete(Long id){
 
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
         //silinme işlemi void döner silinip silinmediğini anlamak için try cach kullanılır.

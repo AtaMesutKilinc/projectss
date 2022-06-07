@@ -12,7 +12,7 @@ import java.util.List;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "Category name can't be blank")
     @Length(message = "Category name must contain min 2 max  50 character.", min = 2, max = 50)

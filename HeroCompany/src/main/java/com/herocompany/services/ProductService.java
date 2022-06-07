@@ -29,14 +29,14 @@ public class ProductService {
     public ResponseEntity<Map<REnum,Object>> save(Product product){
 
         Map<REnum,Object> hashMap= new LinkedHashMap<>();
-        System.out.println("gönderdiğimiz   "+product.getCategory().getId());
+//        System.out.println("gönderdiğimiz   "+product.getCategory().getId());
         try {
             Optional<Category> optionalCategory= Optional.of(categoryRepository.getReferenceById(product.getCategory().getId()));
-            Category category= optionalCategory.get();
-            System.out.println(category);
+
+
             if (optionalCategory.isPresent()){
-                System.out.println("optinal içi: "+optionalCategory.get());
-                product.setCategory(optionalCategory.get());
+//                System.out.println("optinal içi: "+optionalCategory.get());
+//                product.setCategory(optionalCategory.get());
                 productRepository.save(product);
                 hashMap.put(REnum.status,true);
                 hashMap.put(REnum.result,product);
@@ -54,8 +54,6 @@ public class ProductService {
 
 
     }
-
-
 
     public ResponseEntity<Map<String ,Object>> update(Product product){
         Map<REnum,Object> hashMap = new LinkedHashMap<>();
@@ -105,6 +103,7 @@ public class ProductService {
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
 
     }
+
     public ResponseEntity<Map<REnum,Object>> search(String q){
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
         //ToDO: 3 harften sonra search yap
@@ -115,12 +114,17 @@ public class ProductService {
 
     }
 
-    public ResponseEntity<Map<REnum,Object>> productByCategory(Integer id){
+    public ResponseEntity<Map<REnum,Object>> productByCategory(Long id){
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
         List<Product> productList=productRepository.findByCategory_IdEqualsOrderByProductNameAsc(id);
-        hashMap.put(REnum.status,true);
-        hashMap.put(REnum.result,productList);
-        return new ResponseEntity<>(hashMap, HttpStatus.OK);
+        if (productList.size()!=0){
+            hashMap.put(REnum.status,true);
+            hashMap.put(REnum.result,productList);
+            return new ResponseEntity<>(hashMap, HttpStatus.OK);
+        }
+        hashMap.put(REnum.status,false);
+        hashMap.put(REnum.message,"There are no products in this category");
+        return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
 
     }
 

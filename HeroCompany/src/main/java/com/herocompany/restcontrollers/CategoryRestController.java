@@ -34,7 +34,7 @@ public class CategoryRestController {
         return categoryService.update(category);
     }
     @DeleteMapping("/delete")
-    public ResponseEntity delete(@RequestParam Integer id){
+    public ResponseEntity delete(@RequestParam Long id){
         return categoryService.delete(id);
     }
 

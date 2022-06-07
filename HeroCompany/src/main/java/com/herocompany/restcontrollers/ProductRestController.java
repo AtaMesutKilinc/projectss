@@ -46,7 +46,7 @@ public class ProductRestController {
 
 
     @GetMapping("/productByCategory")
-    public ResponseEntity productByCategory(@RequestParam Integer id){
+    public ResponseEntity productByCategory(@RequestParam Long id){
         return productService.productByCategory(id);
     }
 
