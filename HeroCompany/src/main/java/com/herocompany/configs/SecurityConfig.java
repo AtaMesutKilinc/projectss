@@ -1,5 +1,6 @@
 package com.herocompany.configs;
 
+import com.herocompany.entities.Customer;
 import com.herocompany.services.UserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -77,6 +78,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
     }
+
+
 
 
 

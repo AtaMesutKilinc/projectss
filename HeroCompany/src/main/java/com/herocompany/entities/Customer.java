@@ -45,7 +45,7 @@ public class Customer extends Base {
     private String password;
     private boolean enabled;
     private boolean tokenExpired;
-    
+
 
 //    @OneToMany(mappedBy = "customer")
 //    private List<Order> orders;
@@ -62,5 +62,7 @@ public class Customer extends Base {
 //            inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id") //2. sütunu kurdu.
 //    )
 //    private List<Role> roles;
+@Column(name = "reset_password_token")
+private String resetPasswordToken;
 
 }

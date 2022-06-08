@@ -1,6 +1,5 @@
 package com.herocompany.services;
 
-import com.herocompany.entities.Admin;
 import com.herocompany.entities.Basket;
 import com.herocompany.entities.Customer;
 import com.herocompany.repositories.BasketRepository;
@@ -9,21 +8,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class BasketService {
     final BasketRepository basketRepository;
-
-    public BasketService(BasketRepository basketRepository) {
+    final UserDetailService userDetailService;
+    final HttpSession httpSession;
+    public BasketService(BasketRepository basketRepository, UserDetailService userDetailService, HttpSession httpSession) {
         this.basketRepository = basketRepository;
+        this.userDetailService = userDetailService;
+        this.httpSession = httpSession;
     }
 
     public ResponseEntity<Map<REnum,Object>> save(Basket basket){
         Map<REnum,Object> hashMap= new LinkedHashMap<>();
-
+        Customer customer= (Customer) httpSession.getAttribute("customer");
+        basket.setCustomer(customer);
         Basket bas= basketRepository.save(basket);
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,basket);
@@ -72,6 +77,14 @@ public class BasketService {
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,basketRepository.findAll());
+        return new ResponseEntity<>(hashMap, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Map<REnum,Object>> customerBasket(String email){
+        Map<REnum,Object> hashMap =new LinkedHashMap<>();
+        List<Basket> baskets=basketRepository.findByStatusIsTrueAndCustomer_EmailEqualsIgnoreCase(email);
+        hashMap.put(REnum.status,true);
+        hashMap.put(REnum.result,baskets);
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
 

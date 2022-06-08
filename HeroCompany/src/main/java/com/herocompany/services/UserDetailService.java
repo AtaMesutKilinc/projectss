@@ -28,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Service
@@ -40,12 +41,14 @@ public class UserDetailService  implements UserDetailsService {
     final AdminRepository adminRepository;
     final AuthenticationManager authenticationManager; //spring securitye haber vermek için ara sınıf kullanolacak
     final JwtUtil jwtUtil;
+    final HttpSession httpSession;
 
-    public UserDetailService(CustomerRepository customerRepository, AdminRepository adminRepository, @Lazy AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public UserDetailService(CustomerRepository customerRepository, AdminRepository adminRepository, @Lazy AuthenticationManager authenticationManager, JwtUtil jwtUtil, HttpSession httpSession) {
         this.customerRepository = customerRepository;
         this.adminRepository = adminRepository;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.httpSession = httpSession;
     }
     //@Lazy yorgun yükleme manasındadır. Bu ifadeye göre içiçe çağrılmış injecte nesnelerinin circle a girmesini engeller.Sonsuz döngüye girmesini engeller.
 
@@ -69,6 +72,7 @@ public class UserDetailService  implements UserDetailsService {
                     true,
                     roles(admin.getRole())  //todo: hata varmı bak
             );
+            httpSession.setAttribute("admin",admin);
             return userDetails;
         }else if(optionalCustomer.isPresent()&& !optionalAdmin.isPresent()){
             Customer customer= optionalCustomer.get(); //o emaile ait bilgileri getir.
@@ -82,6 +86,7 @@ public class UserDetailService  implements UserDetailsService {
                     true,
                     roles(customer.getRole())
             );
+            httpSession.setAttribute("customer",customer);
             return userDetails;
         }
         else {
@@ -172,6 +177,7 @@ public class UserDetailService  implements UserDetailsService {
         }
         return null;
     }
+
 
     public Customer infoCustomer(){
         Authentication auth= SecurityContextHolder.getContext().getAuthentication();

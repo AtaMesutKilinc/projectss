@@ -5,11 +5,13 @@ import com.herocompany.entities.Customer;
 import com.herocompany.entities.Login;
 import com.herocompany.services.CustomerService;
 import com.herocompany.services.UserDetailService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -58,19 +60,10 @@ public class CustomerRestController {
     }
 
 
-//    @PostMapping("/user/resetPassword")
-//    public GenericResponse resetPassword(HttpServletRequest request,
-//                                         @RequestParam("email") String userEmail) {
-//        User user = userService.findUserByEmail(userEmail);
-//        if (user == null) {
-//            throw new UserNotFoundException();
-//        }
-//        String token = UUID.randomUUID().toString();
-//        userService.createPasswordResetTokenForUser(user, token);
-//        mailSender.send(constructResetTokenEmail(getAppUrl(request),
-//                request.getLocale(), token, user));
-//        return new GenericResponse(
-//                messages.getMessage("message.resetPasswordEmail", null,
-//                        request.getLocale()));
-//    }
+    @PostMapping("/changePassword")
+    public ResponseEntity changePassword(@RequestParam String oldPwd,@RequestParam  String newPwd,
+                                         @RequestParam String newPwdConf){
+        return customerService.changePassword(oldPwd,newPwd,newPwdConf);
+    }
+
 }
