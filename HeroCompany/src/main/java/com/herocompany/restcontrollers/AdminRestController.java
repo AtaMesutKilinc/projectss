@@ -2,10 +2,14 @@ package com.herocompany.restcontrollers;
 
 import com.herocompany.configs.JwtUtil;
 import com.herocompany.entities.Admin;
-import com.herocompany.entities.Customer;
-import com.herocompany.entities.Login;
+import com.herocompany.entities.AdminSettingsAttr;
 import com.herocompany.services.AdminService;
+import com.herocompany.services.CustomerService;
 import com.herocompany.services.UserDetailService;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,32 +20,28 @@ import javax.validation.Valid;
 public class AdminRestController {
 
     final AdminService adminService;
+    final CustomerService customerService;
     final UserDetailService userDetailService;
     final JwtUtil jwtUtil;
 
-    public AdminRestController(AdminService adminService, UserDetailService userDetailService, JwtUtil jwtUtil) {
+
+    public AdminRestController(AdminService adminService, CustomerService customerService, UserDetailService userDetailService, JwtUtil jwtUtil) {
         this.adminService = adminService;
+        this.customerService = customerService;
         this.userDetailService = userDetailService;
         this.jwtUtil = jwtUtil;
-    }
 
-    @PostMapping("/register") //save işlemi
-    public ResponseEntity register(@Valid @RequestBody Admin admin){
-        return userDetailService.registerAdmin(admin);
     }
 
     //nesneyi kabul eden bir json dosyası alamız biz bu nesneye dönüştürmemiz lazım.
 
-    @PostMapping("/login") //auth da olur
-    public ResponseEntity login (@Valid @RequestBody Login login){
-        return  userDetailService.login(login);
-    }
 
     @PostMapping("/save")
     public ResponseEntity save(@Valid @RequestBody Admin admin){
         return adminService.save(admin);
     }
 
+    @Cacheable("adminList")  //name'i keyi list
     @GetMapping("/list")
     public ResponseEntity list(){
         return adminService.list();
@@ -53,8 +53,23 @@ public class AdminRestController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity delete(Integer id){
+    public ResponseEntity delete(@RequestParam Integer id){
         return  adminService.delete(id);
+    }
+
+    @PutMapping("/settingsAdmin")
+    public ResponseEntity settings(@Valid @RequestBody AdminSettingsAttr adminSettingsAttr){
+        return adminService.settings(adminSettingsAttr);
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity changePassword(@RequestParam String oldPwd,@RequestParam String newPwd,
+                                         @RequestParam String newPwdConf){
+        return adminService.changePassword(oldPwd,newPwd,newPwdConf);
+    }
+    @DeleteMapping("/customerDelete")
+    public ResponseEntity customerDelete(Long id){
+        return  customerService.delete(id);
     }
 
 

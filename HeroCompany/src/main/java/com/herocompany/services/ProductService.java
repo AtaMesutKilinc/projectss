@@ -1,10 +1,12 @@
 package com.herocompany.services;
 
+import com.herocompany.configs.Configs;
 import com.herocompany.entities.Category;
 import com.herocompany.entities.Product;
 import com.herocompany.repositories.CategoryRepository;
 import com.herocompany.repositories.ProductRepository;
 import com.herocompany.utils.REnum;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,25 +21,25 @@ public class ProductService {
 
     final ProductRepository productRepository;
     final CategoryRepository categoryRepository;
+    final CacheManager cacheManager;
+    final Configs configs;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, CacheManager cacheManager, Configs configs) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.cacheManager = cacheManager;
+        this.configs = configs;
     }
 
-
     public ResponseEntity<Map<REnum,Object>> save(Product product){
-
         Map<REnum,Object> hashMap= new LinkedHashMap<>();
-//        System.out.println("gönderdiğimiz   "+product.getCategory().getId());
+//        System.out.println("send    "+product.getCategory().getId());
         try {
             Optional<Category> optionalCategory= Optional.of(categoryRepository.getReferenceById(product.getCategory().getId()));
-
-
             if (optionalCategory.isPresent()){
-//                System.out.println("optinal içi: "+optionalCategory.get());
-//                product.setCategory(optionalCategory.get());
                 productRepository.save(product);
+                cacheManager.getCache("productList").clear();
+                cacheManager.getCache("proByCat").clear();
                 hashMap.put(REnum.status,true);
                 hashMap.put(REnum.result,product);
                 return new ResponseEntity<>(hashMap, HttpStatus.OK);
@@ -77,10 +79,7 @@ public class ProductService {
     }
 
     public ResponseEntity<Map<REnum,Object>> delete(Long id){
-
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
-        //silinme işlemi void döner silinip silinmediğini anlamak için try cach kullanılır.
-
         try {
             productRepository.deleteById(id);
             hashMap.put(REnum.status,true);
@@ -90,10 +89,7 @@ public class ProductService {
             hashMap.put(REnum.status,false);
             hashMap.put(REnum.message,ex.getMessage());
             return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
-
-
         }
-
     }
 
     public ResponseEntity<Map<REnum,Object>> list(){
@@ -101,17 +97,14 @@ public class ProductService {
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,productRepository.findAll());
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
-
     }
 
     public ResponseEntity<Map<REnum,Object>> search(String q){
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
-        //ToDO: 3 harften sonra search yap
         List<Product> productList=productRepository.findByProductNameContainsIgnoreCaseOrDetailContainsIgnoreCase(q,q);
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,productList);
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
-
     }
 
     public ResponseEntity<Map<REnum,Object>> productByCategory(Long id){

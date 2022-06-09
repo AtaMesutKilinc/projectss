@@ -35,7 +35,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {//pr
         return null;
     }
 
-
+//    @ExceptionHandler({MethodArgumentNotValidException.class}) //bad request hatalarında hep bu exception
+//    public Map handler(MethodArgumentNotValidException ex){
+//        Map<REnum,Object> hm = new LinkedHashMap<>();
+//        List<FieldError> errors=ex.getFieldErrors(); //aynı anda birden fazla hata olabilir.
+//        List< Map<String,String>> lss= new ArrayList<>();
+//        for (FieldError item:errors){
+//            Map<String,String> hmx=new HashMap<>();
+//            String fieldName=item.getField();  //adını verir fieldın
+//            String message= item.getDefaultMessage(); //mesajı veriri
+////            System.out.println(fieldName+" "+message);
+//
+//            hmx.put(fieldName,message);
+//            lss.add(hmx);
+//
+//        }
+//        hm.put(REnum.status,false);
+//        hm.put(REnum.error,lss);
+//
+//        return hm;
+//    }
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 //        return super.handleMethodArgumentNotValid(ex, headers, status, request);

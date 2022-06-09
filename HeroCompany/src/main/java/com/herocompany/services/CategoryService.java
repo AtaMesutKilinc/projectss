@@ -1,8 +1,10 @@
 package com.herocompany.services;
 
+import com.herocompany.configs.Configs;
 import com.herocompany.entities.Category;
 import com.herocompany.repositories.CategoryRepository;
 import com.herocompany.utils.REnum;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,29 +17,30 @@ import java.util.Optional;
 public class CategoryService {
 
     final CategoryRepository categoryRepository;
+    final CacheManager cacheManager;
+    final Configs configs;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, CacheManager cacheManager, Configs configs) {
         this.categoryRepository = categoryRepository;
+        this.cacheManager = cacheManager;
+        this.configs = configs;
     }
 
     public ResponseEntity<Map<REnum,Object>> save(Category category){
-//        HttpHeaders headers=new HttpHeaders(); //bu bölüm header yani üst bilgi olarak gönderilir.
+//        HttpHeaders headers=new HttpHeaders();
 //        headers.add("customData","ex");
         Map<REnum,Object> hashMap= new LinkedHashMap<>();
-        Category cat= categoryRepository.save(category); //u içinde id de var. yukardaki id de user yok.
+        Category cat= categoryRepository.save(category);
+        cacheManager.getCache("categoryList").clear();
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,category);
-        return new ResponseEntity<>(hashMap, HttpStatus.OK); //header kullanıcının görmediği hm kısmı kullanıcının gördüğü body json
+        return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
-
-    //Optional türünden nesneler, null olma ihtimali olan alanları kolay yönetmek için oluşturulmuştur.
 
     public ResponseEntity<Map<String ,Object>> update(Category category){
         Map<REnum,Object> hashMap = new LinkedHashMap<>();
         try{
             Optional<Category> optionalCategory = categoryRepository.findById(category.getId());
-            //burada 2.gun degişiklik yapıldı
-            //optional null gelme durumunda patlamaması için optional yaparız.
             if(optionalCategory.isPresent()){
                 categoryRepository.saveAndFlush(category);
                 hashMap.put(REnum.status, true);
@@ -52,34 +55,25 @@ public class CategoryService {
             hashMap.put(REnum.message, ex.getMessage());
             return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     public ResponseEntity<Map<REnum,Object>> delete(Long id){
-
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
-        //silinme işlemi void döner silinip silinmediğini anlamak için try cach kullanılır.
-
         try {
-            categoryRepository.deleteById(id); //geriye void dönderiyor.
-
+            categoryRepository.deleteById(id);
             hashMap.put(REnum.status,true);
-
             return new ResponseEntity<>(hashMap, HttpStatus.OK);
-            //header kullanıcının görmediği hm kısmı kullanıcının gördüğü body json
-
         }catch (Exception ex){
             hashMap.put(REnum.status,false);
             hashMap.put(REnum.message,ex.getMessage());
             return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     public ResponseEntity<Map<REnum,Object>> list(){
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,categoryRepository.findAll());
-        return new ResponseEntity<>(hashMap, HttpStatus.OK); //header kullanıcının görmediği hm kısmı kullanıcının gördüğü body json
+        return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
 }

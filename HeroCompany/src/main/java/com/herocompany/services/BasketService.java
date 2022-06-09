@@ -19,6 +19,7 @@ public class BasketService {
     final BasketRepository basketRepository;
     final UserDetailService userDetailService;
     final HttpSession httpSession;
+
     public BasketService(BasketRepository basketRepository, UserDetailService userDetailService, HttpSession httpSession) {
         this.basketRepository = basketRepository;
         this.userDetailService = userDetailService;
@@ -32,7 +33,6 @@ public class BasketService {
         Basket bas= basketRepository.save(basket);
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,basket);
-
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
 
     }
@@ -51,7 +51,6 @@ public class BasketService {
                 hashMap.put(REnum.message,"Basket is null! try again");
                 return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
             }
-
         }catch (Exception ex){
             hashMap.put(REnum.status,false);
             hashMap.put(REnum.message,ex.getMessage());

@@ -1,8 +1,11 @@
 package com.herocompany.services;
 
+import com.herocompany.entities.Admin;
+import com.herocompany.entities.AdminSettingsAttr;
 import com.herocompany.entities.Customer;
 
 
+import com.herocompany.entities.CustomerSettingsAttr;
 import com.herocompany.repositories.CustomerRepository;
 import com.herocompany.utils.REnum;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Service
@@ -19,10 +23,13 @@ public class CustomerService {
 
     final CustomerRepository customerRepository;
     final UserDetailService userDetailService;
-    public CustomerService(CustomerRepository customerRepository, UserDetailService userDetailService) {
-        this.customerRepository = customerRepository;
+    final HttpSession httpSession;
 
+    public CustomerService(CustomerRepository customerRepository, UserDetailService userDetailService,
+                           HttpSession httpSession) {
+        this.customerRepository = customerRepository;
         this.userDetailService = userDetailService;
+        this.httpSession = httpSession;
     }
 
 
@@ -31,7 +38,6 @@ public class CustomerService {
         Customer cus= customerRepository.save(customer);
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,customer);
-
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
 
     }
@@ -79,10 +85,37 @@ public class CustomerService {
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
 
+    public ResponseEntity<Map<REnum,Object>> settings(CustomerSettingsAttr customerSettingsAttr){
+        Map<REnum,Object> hashMap= new LinkedHashMap<>();
+        try {
+            Customer customer= (Customer) httpSession.getAttribute("customer");
+            Optional<Customer> optionalCustomer= customerRepository.findById(customer.getId());
+            if (optionalCustomer.isPresent()){
+                customer.setFirstName(customerSettingsAttr.getFirstName());
+                customer.setLastName(customerSettingsAttr.getLastName());
+                customer.setPhone(customerSettingsAttr.getPhone());
+                customer.setEmail(customerSettingsAttr.getEmail());
+                customerRepository.saveAndFlush(customer);
+                hashMap.put(REnum.status,true);
+                hashMap.put(REnum.result, customer);
+                return new  ResponseEntity(hashMap, HttpStatus.OK);
+            }else {
+                hashMap.put(REnum.status,false);
+                hashMap.put(REnum.message,"Customer is null! try again");
+                return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception ex){
+            hashMap.put(REnum.status,false);
+            hashMap.put(REnum.message,ex.getMessage());
+            return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     public ResponseEntity<Map<REnum,Object>> changePassword(String oldPwd,String pwd, String confirmPwd){
         Map<REnum,Object> hashMap= new LinkedHashMap<>();
         try {
-            Customer customer=userDetailService.infoCustomer();
+            Customer customer= (Customer) httpSession.getAttribute("customer");
             boolean result = userDetailService.encoder().matches(oldPwd, customer.getPassword());
             if (result){
                 if (pwd.equals(confirmPwd)){

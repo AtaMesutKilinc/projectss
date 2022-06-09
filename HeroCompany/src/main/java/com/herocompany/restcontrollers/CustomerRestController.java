@@ -1,7 +1,9 @@
 package com.herocompany.restcontrollers;
 
 import com.herocompany.configs.JwtUtil;
+import com.herocompany.entities.AdminSettingsAttr;
 import com.herocompany.entities.Customer;
+import com.herocompany.entities.CustomerSettingsAttr;
 import com.herocompany.entities.Login;
 import com.herocompany.services.CustomerService;
 import com.herocompany.services.UserDetailService;
@@ -27,17 +29,10 @@ public class CustomerRestController {
         this.userDetailService = userDetailService;
         this.jwtUtil = jwtUtil;
     }
-    @PostMapping("/register") //save işlemi
-    public ResponseEntity register(@Valid @RequestBody Customer customer){
-        return userDetailService.registerCustomer(customer);
-    }
+
 
     //nesneyi kabul eden bir json dosyası alamız biz bu nesneye dönüştürmemiz lazım.
 
-    @PostMapping("/login") //auth da olur
-    public ResponseEntity login (@Valid @RequestBody Login login){
-        return  userDetailService.login(login);
-    }
 
     @PostMapping("/save")
     public ResponseEntity save(@Valid @RequestBody Customer customer){
@@ -59,7 +54,10 @@ public class CustomerRestController {
         return  customerService.delete(id);
     }
 
-
+    @PutMapping("/settings")
+    public ResponseEntity settings(@Valid @RequestBody CustomerSettingsAttr customerSettingsAttr){
+        return customerService.settings(customerSettingsAttr);
+    }
     @PostMapping("/changePassword")
     public ResponseEntity changePassword(@RequestParam String oldPwd,@RequestParam  String newPwd,
                                          @RequestParam String newPwdConf){
