@@ -40,9 +40,8 @@ public class Customer extends Base {
 
 //    @Length(message = "Maximum 10 min 3",min = 5, max = 10)
     @NotBlank(message = "password can not be blank")
-//    @Pattern(message = "Password must contain min one upper,lower letter and 0-9 digit number ",
-//            regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\\\S+$)")
-    private String password;
+    @Pattern(message = "Password must contain min one upper,lower letter and 0-9 digit number ",
+            regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\\s]).{6,}")private String password;
     private boolean enabled;
     private boolean tokenExpired;
 

@@ -92,6 +92,7 @@ public class AdminService {
                 admin.setAdminSurname(adminSettingsAttr.getAdminSurname());
                 admin.setCompanyName(adminSettingsAttr.getCompanyName());
                 admin.setEmail(adminSettingsAttr.getEmail());
+
                 adminRepository.saveAndFlush(admin);
                 hashMap.put(REnum.status,true);
                 hashMap.put(REnum.result, admin);

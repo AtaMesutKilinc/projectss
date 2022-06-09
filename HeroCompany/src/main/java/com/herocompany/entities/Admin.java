@@ -29,6 +29,7 @@ public class Admin extends Base {
     @Length(message = "Company name must contain min 2 max  50 character.", min = 2, max = 50)
     private String companyName;
 
+//    @Column(unique = true)
     @Length(message = "Maximum 60", max = 60)
     @NotBlank(message = "Email can not be blank")
     @Email(message = "Email Format Error")
@@ -36,7 +37,8 @@ public class Admin extends Base {
 
 //    @Length(message = "Maximum 5 min 10",min = 5, max = 10)
     @NotBlank(message = "password can not be blank")
-//    @Pattern(message = "Password must contain min one upper,lower letter and 0-9 digit number ", regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\\\S+$)")
+    @Pattern(message = "Password must contain min one upper,lower letter and 0-9 digit number ",
+    regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\\s]).{6,}")
     private String password;
 
     private boolean enabled;
