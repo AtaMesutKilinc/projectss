@@ -68,7 +68,7 @@ public class AdminRestController {
         return adminService.changePassword(oldPwd,newPwd,newPwdConf);
     }
     @DeleteMapping("/customerDelete")
-    public ResponseEntity customerDelete(Long id){
+    public ResponseEntity customerDelete(@RequestParam Long id){
         return  customerService.delete(id);
     }
 

@@ -37,14 +37,13 @@ public class BasketRestController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity delete(Long id){
+    public ResponseEntity delete(@RequestParam Long id){
         return  basketService.delete(id);
     }
 
-    @GetMapping("/MyOrders")
-    public ResponseEntity MyOrders(){
-        Customer customer= (Customer) httpSession.getAttribute("customer");
-        return basketService.customerBasket(customer.getEmail());
+    @GetMapping("/MyBaskets")
+    public ResponseEntity MyBaskets(){
+        return basketService.getMyBasket();
     }
 
 

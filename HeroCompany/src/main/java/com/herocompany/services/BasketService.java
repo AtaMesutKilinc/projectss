@@ -79,9 +79,18 @@ public class BasketService {
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
 
-    public ResponseEntity<Map<REnum,Object>> customerBasket(String email){
+    public ResponseEntity<Map<REnum,Object>> getMyOrder(){
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
-        List<Basket> baskets=basketRepository.findByStatusIsTrueAndCustomer_EmailEqualsIgnoreCase(email);
+        Customer customer= (Customer) httpSession.getAttribute("customer");
+        List<Basket> baskets=basketRepository.findByStatusIsTrueAndCustomer_EmailEqualsIgnoreCase(customer.getEmail());
+        hashMap.put(REnum.status,true);
+        hashMap.put(REnum.result,baskets);
+        return new ResponseEntity<>(hashMap, HttpStatus.OK);
+    }
+    public ResponseEntity<Map<REnum,Object>> getMyBasket(){
+        Map<REnum,Object> hashMap =new LinkedHashMap<>();
+        Customer customer= (Customer) httpSession.getAttribute("customer");
+        List<Basket> baskets=basketRepository.findByCustomer_EmailEqualsIgnoreCaseAndStatusFalse(customer.getEmail());
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,baskets);
         return new ResponseEntity<>(hashMap, HttpStatus.OK);

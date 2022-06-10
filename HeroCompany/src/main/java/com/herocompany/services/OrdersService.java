@@ -35,8 +35,9 @@ public class OrdersService {
         this.configs = configs;
     }
 
-    public ResponseEntity<Map<REnum,Object>> save(Orders orders){
+    public ResponseEntity<Map<REnum,Object>> save(){
         Map<REnum,Object> hashMap= new LinkedHashMap<>();
+        Orders orders = new Orders();
         int sum=0;
         Customer customer = (Customer) httpSession.getAttribute("customer");
         List<Basket> baskets = basketRepository.findByCustomer_EmailEqualsIgnoreCaseAndStatusFalse(customer.getEmail()); //orders.getCustomer().getEmail()
@@ -69,6 +70,7 @@ public class OrdersService {
             Optional<Orders> optionalOrders= ordersRepository.findById(orders.getId());
             if (optionalOrders.isPresent()){
                 ordersRepository.saveAndFlush(orders);
+                cacheManager.getCache("orderList").clear();
                 hashMap.put(REnum.status,true);
                 hashMap.put(REnum.result, orders);
                 return new  ResponseEntity(hashMap, HttpStatus.OK);
@@ -90,6 +92,7 @@ public class OrdersService {
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
         try {
             ordersRepository.deleteById(id);
+            cacheManager.getCache("orderList").clear();
             hashMap.put(REnum.status,true);
             return new ResponseEntity<>(hashMap, HttpStatus.OK);
         }catch (Exception ex){

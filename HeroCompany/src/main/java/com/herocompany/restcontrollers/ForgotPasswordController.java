@@ -22,12 +22,10 @@ import java.io.UnsupportedEncodingException;
 public class ForgotPasswordController {
 
     private JavaMailSender mailSender;
-
-
     private CustomerService customerService;
 
     //şifremi unuttum kızmı
-    @GetMapping("/forgot_password")
+    @GetMapping("/forgot_assword")
     public String showForgotPasswordForm(Model model) {
         model.addAttribute("pageTitle","ForgotPassword");
         return "forgot_password_form";

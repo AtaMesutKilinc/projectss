@@ -35,6 +35,7 @@ public class CustomerService {
 
     public ResponseEntity<Map<REnum,Object>> save(Customer customer){
         Map<REnum,Object> hashMap= new LinkedHashMap<>();
+        customer.setPassword(userDetailService.encoder().encode(customer.getPassword()));
         Customer cus= customerRepository.save(customer);
         hashMap.put(REnum.status,true);
         hashMap.put(REnum.result,customer);

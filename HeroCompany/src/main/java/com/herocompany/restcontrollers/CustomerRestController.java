@@ -34,6 +34,7 @@ public class CustomerRestController {
     //nesneyi kabul eden bir json dosyası alamız biz bu nesneye dönüştürmemiz lazım.
 
 
+    //customer register !!
     @PostMapping("/save")
     public ResponseEntity save(@Valid @RequestBody Customer customer){
         return customerService.save(customer);
@@ -50,7 +51,7 @@ public class CustomerRestController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity delete(Long id){
+    public ResponseEntity delete(@RequestParam Long id){
         return  customerService.delete(id);
     }
 
