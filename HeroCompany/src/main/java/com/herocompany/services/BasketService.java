@@ -87,6 +87,7 @@ public class BasketService {
         hashMap.put(REnum.result,baskets);
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
+
     public ResponseEntity<Map<REnum,Object>> getMyBasket(){
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
         Customer customer= (Customer) httpSession.getAttribute("customer");

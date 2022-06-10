@@ -11,6 +11,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     //	Gönderilecek kategori id’sine uyan ürünlerin listesi
     List<Product> findByCategory_IdEqualsOrderByProductNameAsc(Long id);
 
+  //normal query daha verimli
 
 
     //Ürün arama – (Valid 3 karakter)
