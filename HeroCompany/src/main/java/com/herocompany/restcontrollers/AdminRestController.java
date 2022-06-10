@@ -5,11 +5,9 @@ import com.herocompany.entities.Admin;
 import com.herocompany.entities.AdminSettingsAttr;
 import com.herocompany.services.AdminService;
 import com.herocompany.services.CustomerService;
+import com.herocompany.services.OrdersService;
 import com.herocompany.services.UserDetailService;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,13 +20,15 @@ public class AdminRestController {
     final AdminService adminService;
     final CustomerService customerService;
     final UserDetailService userDetailService;
+    final OrdersService ordersService;
     final JwtUtil jwtUtil;
 
 
-    public AdminRestController(AdminService adminService, CustomerService customerService, UserDetailService userDetailService, JwtUtil jwtUtil) {
+    public AdminRestController(AdminService adminService, CustomerService customerService, UserDetailService userDetailService, OrdersService ordersService, JwtUtil jwtUtil) {
         this.adminService = adminService;
         this.customerService = customerService;
         this.userDetailService = userDetailService;
+        this.ordersService = ordersService;
         this.jwtUtil = jwtUtil;
 
     }
@@ -73,5 +73,21 @@ public class AdminRestController {
     }
 
 
+    @PutMapping("/block")
+    public ResponseEntity block(@RequestParam Long id){
+        return customerService.block(id);
+    }
+    @PutMapping("/unblock")
+    public ResponseEntity unblock(@RequestParam Long id){
+        return customerService.unblock(id);
+    }
+    @GetMapping("/getCustomer")
+    public ResponseEntity getCustomer(@RequestParam Long id){
+        return customerService.getCustomer(id);
+    }
+    @GetMapping("/ordersDetail")
+    public ResponseEntity ordersDetail(@RequestParam Long id){
+        return ordersService.ordersDetail(id);
+    }
 
 }

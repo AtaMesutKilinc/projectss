@@ -8,6 +8,7 @@ import com.herocompany.entities.Login;
 import com.herocompany.services.CustomerService;
 import com.herocompany.services.UserDetailService;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,10 +60,14 @@ public class CustomerRestController {
     public ResponseEntity settings(@Valid @RequestBody CustomerSettingsAttr customerSettingsAttr){
         return customerService.settings(customerSettingsAttr);
     }
+
+
     @PostMapping("/changePassword")
     public ResponseEntity changePassword(@RequestParam String oldPwd,@RequestParam  String newPwd,
                                          @RequestParam String newPwdConf){
         return customerService.changePassword(oldPwd,newPwd,newPwdConf);
     }
+
+
 
 }

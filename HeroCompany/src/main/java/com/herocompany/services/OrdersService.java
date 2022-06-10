@@ -108,4 +108,12 @@ public class OrdersService {
         hashMap.put(REnum.result,ordersRepository.findAll());
         return new ResponseEntity<>(hashMap, HttpStatus.OK);
     }
+
+    public ResponseEntity<Map<REnum,Object>> ordersDetail(Long id){
+        Map<REnum,Object> hashMap =new LinkedHashMap<>();
+        List<Orders> orders= ordersRepository.findByIdIs(id);
+        hashMap.put(REnum.status,true);
+        hashMap.put(REnum.result,orders);
+        return new ResponseEntity<>(hashMap, HttpStatus.OK);
+    }
 }

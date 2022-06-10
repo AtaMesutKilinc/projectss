@@ -11,6 +11,7 @@ import com.herocompany.utils.REnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -145,6 +146,79 @@ public class CustomerService {
 
     }
 
+    public ResponseEntity<Map<REnum,Object>> block(Long id){
+        Map<REnum,Object> hashMap= new LinkedHashMap<>();
+        try {
+            Optional<Customer> optionalCustomer=customerRepository.findById(id);
+            if (optionalCustomer.isPresent()){
+                Customer customer= optionalCustomer.get();
+                customer.setEnabled(false);
+                customerRepository.saveAndFlush(customer);
+                hashMap.put(REnum.status,true);
+                hashMap.put(REnum.result, customer);
+                return new  ResponseEntity(hashMap, HttpStatus.OK);
+            }else {
+                hashMap.put(REnum.status,false);
+                hashMap.put(REnum.message,"customer not found");
+                return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception ex){
+            hashMap.put(REnum.status,false);
+            hashMap.put(REnum.message,ex.getMessage());
+            return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    public ResponseEntity<Map<REnum,Object>> unblock(Long id){
+        Map<REnum,Object> hashMap= new LinkedHashMap<>();
+        try {
+            Optional<Customer> optionalCustomer=customerRepository.findById(id);
+            if (optionalCustomer.isPresent()){
+                Customer customer= optionalCustomer.get();
+                customer.setEnabled(true);
+                customerRepository.saveAndFlush(customer);
+                hashMap.put(REnum.status,true);
+                hashMap.put(REnum.result, customer);
+                return new  ResponseEntity(hashMap, HttpStatus.OK);
+            }else {
+                hashMap.put(REnum.status,false);
+                hashMap.put(REnum.message,"customer not found");
+                return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception ex){
+            hashMap.put(REnum.status,false);
+            hashMap.put(REnum.message,ex.getMessage());
+            return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    public ResponseEntity<Map<REnum,Object>> getCustomer(Long id){
+        Map<REnum,Object> hashMap= new LinkedHashMap<>();
+        try {
+            Optional<Customer> optionalCustomer=customerRepository.findById(id);
+            if (optionalCustomer.isPresent()){
+                Customer customer= optionalCustomer.get();
+                hashMap.put(REnum.status,true);
+                hashMap.put(REnum.result, customer);
+                return new  ResponseEntity(hashMap, HttpStatus.OK);
+            }else {
+                hashMap.put(REnum.status,false);
+                hashMap.put(REnum.message,"customer not found");
+                return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception ex){
+            hashMap.put(REnum.status,false);
+            hashMap.put(REnum.message,ex.getMessage());
+            return new  ResponseEntity(hashMap, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
     public void updateResetPasswordToken(String token, String email) throws Exception {
         //kullanıcının emailni bulduk customerapassword tokenı kaydettik
         Optional<Customer> optionalCustomer = customerRepository.findByEmail(email);
@@ -174,5 +248,6 @@ public class CustomerService {
         customer.setResetPasswordToken(null);
         customerRepository.save(customer);
     }
+
 
 }
