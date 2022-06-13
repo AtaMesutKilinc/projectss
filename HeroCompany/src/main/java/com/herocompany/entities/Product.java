@@ -30,6 +30,8 @@ public class Product extends Base{
     @Range(message = "price can be between 0 and 99999", min = 0, max = 99999)
     private int price;
 
+    private Integer stockQuantity;
+
     @ManyToOne
 
     @JoinColumn(name="category_id",referencedColumnName = "id")

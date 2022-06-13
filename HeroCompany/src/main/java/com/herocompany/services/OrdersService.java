@@ -4,8 +4,10 @@ import com.herocompany.configs.Configs;
 import com.herocompany.entities.Basket;
 import com.herocompany.entities.Customer;
 import com.herocompany.entities.Orders;
+import com.herocompany.entities.Product;
 import com.herocompany.repositories.BasketRepository;
 import com.herocompany.repositories.OrdersRepository;
+import com.herocompany.repositories.ProductRepository;
 import com.herocompany.utils.REnum;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
@@ -23,13 +25,15 @@ public class OrdersService {
 
     final OrdersRepository ordersRepository;
     final BasketRepository basketRepository;
+    final ProductRepository productRepository;
     final HttpSession httpSession;
     final CacheManager cacheManager;
     final Configs configs;
 
-    public OrdersService(OrdersRepository ordersRepository, BasketRepository basketRepository, HttpSession httpSession, CacheManager cacheManager, Configs configs) {
+    public OrdersService(OrdersRepository ordersRepository, BasketRepository basketRepository, ProductRepository productRepository, HttpSession httpSession, CacheManager cacheManager, Configs configs) {
         this.ordersRepository = ordersRepository;
         this.basketRepository = basketRepository;
+        this.productRepository = productRepository;
         this.httpSession = httpSession;
         this.cacheManager = cacheManager;
         this.configs = configs;
@@ -42,7 +46,7 @@ public class OrdersService {
         Customer customer = (Customer) httpSession.getAttribute("customer");
         List<Basket> baskets = basketRepository.findByCustomer_EmailEqualsIgnoreCaseAndStatusFalse(customer.getEmail()); //orders.getCustomer().getEmail()
         if(baskets.size()>0){  //basketi varsa
-//            orders.setCustomer(baskets.get(0).getCustomer()); //order customerına eşitle
+            orders.setCustomer(baskets.get(0).getCustomer()); //order customerına eşitle
             orders.setBaskets(baskets); //basketini set et ordersa
             for (Basket item : baskets) {
                 sum = sum+item.getProduct().getPrice()*item.getQuantity();
@@ -90,7 +94,13 @@ public class OrdersService {
 
     public ResponseEntity<Map<REnum,Object>> delete(Long id){
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
+
         try {
+            Optional<Orders>optionalOrders=ordersRepository.findById(id);
+//            Optional<Product> optionalProduct=productRepository.findById(optionalOrders.get().getBaskets().get().)
+            Orders orders=optionalOrders.get();
+
+//            Product product=orders.getBaskets().get()
             ordersRepository.deleteById(id);
             cacheManager.getCache("orderList").clear();
             hashMap.put(REnum.status,true);
