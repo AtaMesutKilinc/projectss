@@ -5,7 +5,7 @@ import com.herocompany.entities.Category;
 import com.herocompany.entities.Product;
 import com.herocompany.repositories.CategoryRepository;
 import com.herocompany.repositories.ProductRepository;
-import com.herocompany.utils.REnum;
+import com.herocompany.repositories.utils.REnum;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

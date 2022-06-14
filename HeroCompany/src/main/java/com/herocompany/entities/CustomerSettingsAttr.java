@@ -16,7 +16,7 @@ public class CustomerSettingsAttr {
     @Length(message = "Lastname must be between 3 and 50 characters", min = 3, max = 50)
     private String lastName;
     @NotBlank(message = "Phone can't be blank")
-//    @Length(message = "Phone must be between 3 and 50 characters", min = 3, max = 10)
+
     // @Pattern(message = "Please enter a valid phone number",regexp = "/(\\+\\d{1,3}\\s?)?((\\(\\d{3}\\)\\s?)|(\\d{3})(\\s|-?))(\\d{3}(\\s|-?))(\\d{4})(\\s?(([E|e]xt[:|.|]?)|x|X)(\\s?\\d+))?/g")
     private String phone;
 

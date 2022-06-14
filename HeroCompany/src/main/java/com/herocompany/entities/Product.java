@@ -33,18 +33,8 @@ public class Product extends Base{
     private Integer stockQuantity;
 
     @ManyToOne
-
     @JoinColumn(name="category_id",referencedColumnName = "id")
     private Category category;
 
-//    @OneToMany (mappedBy = "product",fetch =  FetchType.LAZY)
-//    private List<OrderDetail> orderDetails;
-
-    //@ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
-    //user hazırlanırken rollere gitmete çalışıyor . defaultta eagledır. circle a neden oldu .dikkate alma.
-    //biz prog ayağa kaldırdığımızda ilk etapta jwt user ı çağıracağımızdan mapped by ı buraya yazıyoruz.
-
-//    @OneToMany(mappedBy = "product")
-//    private List<OrderDetails> orderDetails;
 
 }

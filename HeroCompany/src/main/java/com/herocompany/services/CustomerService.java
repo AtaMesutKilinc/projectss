@@ -1,18 +1,14 @@
 package com.herocompany.services;
 
-import com.herocompany.entities.Admin;
-import com.herocompany.entities.AdminSettingsAttr;
 import com.herocompany.entities.Customer;
 
 
 import com.herocompany.entities.CustomerSettingsAttr;
 import com.herocompany.repositories.CustomerRepository;
-import com.herocompany.utils.REnum;
+import com.herocompany.repositories.utils.REnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -219,35 +215,6 @@ public class CustomerService {
 
     }
 
-    public void updateResetPasswordToken(String token, String email) throws Exception {
-        //kullanıcının emailni bulduk customerapassword tokenı kaydettik
-        Optional<Customer> optionalCustomer = customerRepository.findByEmail(email);
-        if (optionalCustomer.isPresent()) {
-           optionalCustomer.get().setPassword(token);
-            customerRepository.save(optionalCustomer.get());
-        } else {
-            throw new Exception("Could not find any customer with the email " + email);
-        }
-    }
-
-    public Customer getByResetPasswordToken(String token) {
-        //kaydettiğimiz tokenı çağpırdık
-       Optional<Customer> optionalCustomer= customerRepository.findByResetPasswordToken(token);
-        if (optionalCustomer.isPresent()){
-            return optionalCustomer.get();
-        }
-        return null;
-    }
-
-    public void updatePassword(Customer customer, String newPassword) {
-        //yeni passwordu şifreledik.
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        customer.setPassword(encodedPassword);
-
-        customer.setResetPasswordToken(null);
-        customerRepository.save(customer);
-    }
 
 
 }

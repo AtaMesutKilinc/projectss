@@ -9,16 +9,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Optional<Customer> findByEmailEqualsIgnoreCase(String email);
 
+    Optional<Customer> findByResetPasswordTokenEquals(String resetPasswordToken);
 
 
 
 
-
-    //Optional<Customer> findByPasswordEquals(String password);
-
-    Optional<Customer> findByResetPasswordToken(String resetPasswordToken);
-
-    Optional<Customer> findByEmail(String email);
 
 
 

@@ -3,7 +3,7 @@ package com.herocompany.services;
 import com.herocompany.configs.Configs;
 import com.herocompany.entities.Category;
 import com.herocompany.repositories.CategoryRepository;
-import com.herocompany.utils.REnum;
+import com.herocompany.repositories.utils.REnum;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +27,6 @@ public class CategoryService {
     }
 
     public ResponseEntity<Map<REnum,Object>> save(Category category){
-//        HttpHeaders headers=new HttpHeaders();
-//        headers.add("customData","ex");
         Map<REnum,Object> hashMap= new LinkedHashMap<>();
         Category cat= categoryRepository.save(category);
         cacheManager.getCache("categoryList").clear();

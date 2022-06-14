@@ -1,4 +1,4 @@
-package com.herocompany.utils;
+package com.herocompany.repositories.utils;
 
 public enum REnum {
 

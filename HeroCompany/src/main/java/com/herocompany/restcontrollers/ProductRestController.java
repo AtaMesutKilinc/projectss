@@ -1,17 +1,12 @@
 package com.herocompany.restcontrollers;
 
-import com.herocompany.entities.Category;
 import com.herocompany.entities.Product;
 import com.herocompany.services.ProductService;
-import com.herocompany.utils.REnum;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.*;
 
 @RestController
 @RequestMapping("/product")

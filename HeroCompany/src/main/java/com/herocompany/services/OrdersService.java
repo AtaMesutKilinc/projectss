@@ -8,7 +8,7 @@ import com.herocompany.entities.Product;
 import com.herocompany.repositories.BasketRepository;
 import com.herocompany.repositories.OrdersRepository;
 import com.herocompany.repositories.ProductRepository;
-import com.herocompany.utils.REnum;
+import com.herocompany.repositories.utils.REnum;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -94,23 +94,70 @@ public class OrdersService {
 
     public ResponseEntity<Map<REnum,Object>> delete(Long id){
         Map<REnum,Object> hashMap =new LinkedHashMap<>();
-
         try {
-            Optional<Orders>optionalOrders=ordersRepository.findById(id);
-//            Optional<Product> optionalProduct=productRepository.findById(optionalOrders.get().getBaskets().get().)
-            Orders orders=optionalOrders.get();
+            Optional<Orders> optionalOrders=ordersRepository.findById(id);
+            if(optionalOrders.isPresent()){
+                Orders orders=optionalOrders.get();
+                ordersRepository.deleteById(id);
+                List<Basket> baskets=orders.getBaskets();
+                for (Basket basket:baskets){
+                    Integer quantity=basket.getQuantity();
+                    Product product=basket.getProduct();
+                    product.setStockQuantity(product.getStockQuantity()+quantity);
+                    productRepository.saveAndFlush(product);
+                }
 
-//            Product product=orders.getBaskets().get()
-            ordersRepository.deleteById(id);
-            cacheManager.getCache("orderList").clear();
-            hashMap.put(REnum.status,true);
-            return new ResponseEntity<>(hashMap, HttpStatus.OK);
+                hashMap.put(REnum.status,true);
+                hashMap.put(REnum.message,"Order delete is success ");
+                cacheManager.getCache("orderList").clear();
+                return new ResponseEntity<>(hashMap, HttpStatus.OK);
+
+            }else{
+                hashMap.put(REnum.status, false);
+                hashMap.put(REnum.message, "There is not such order");
+                return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
+            }
+
+
+
+
         }catch (Exception ex){
             hashMap.put(REnum.status,false);
             hashMap.put(REnum.message,ex.getMessage());
             return new ResponseEntity<>(hashMap, HttpStatus.BAD_REQUEST);
         }
     }
+
+
+//public ResponseEntity delete(long id) {
+//        Map<REnum, Object> hm = new LinkedHashMap<>();
+//        try {
+//           Optional<Orders> optionalOrders=ordersRepository.findById(id);
+//           if(optionalOrders.isPresent()){
+//               Orders orders=optionalOrders.get();
+//               ordersRepository.deleteById(id);
+//               List<Basket> baskets=orders.getBaskets();
+//               for(Basket basket:baskets){
+//                   Integer quantity=basket.getQuantity();
+//                   Product product=basket.getProduct();
+//                   product.setStockQuantity(product.getStockQuantity()+quantity);
+//                   productRepository.saveAndFlush(product);
+//               }
+//                hm.put(REnum.status, true);
+//                return new ResponseEntity<>(hm, HttpStatus.OK);
+//           }else{
+//               hm.put(REnum.status, false);
+//               hm.put(REnum.message, "There is not such order id");
+//               return new ResponseEntity<>(hm, HttpStatus.BAD_REQUEST);
+//           }
+//        } catch (Exception ex) {
+//            hm.put(REnum.status, false);
+//            hm.put(REnum.error, ex.getMessage());
+//            return new ResponseEntity<>(hm, HttpStatus.BAD_REQUEST);
+//        }
+//
+//    }
+
 
     public ResponseEntity<Map<REnum,Object>> list(){
         Map<REnum,Object> hashMap =new LinkedHashMap<>();

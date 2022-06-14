@@ -50,4 +50,6 @@ public class Admin extends Base {
     @JoinColumn(name = "role_Id", referencedColumnName = "id")
     private Role role;
 
+    //@Column(name = "reset_password_token")
+    private String resetPasswordToken;
 }

@@ -9,7 +9,7 @@ import com.herocompany.entities.Role;
 import com.herocompany.repositories.CustomerRepository;
 import com.herocompany.entities.Admin;
 import com.herocompany.entities.Customer;
-import com.herocompany.utils.REnum;
+import com.herocompany.repositories.utils.REnum;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,8 +50,6 @@ public class UserDetailService  implements UserDetailsService {
         this.httpSession = httpSession;
     }
 
-
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Admin> optionalAdmin=adminRepository.findByEmailEqualsIgnoreCase(username);
@@ -87,7 +85,6 @@ public class UserDetailService  implements UserDetailsService {
             throw new UsernameNotFoundException("User not found"); //403 gibi bir hata
         }
     }
-
 
     public Collection roles(Role role ) {
         List<GrantedAuthority> ls = new ArrayList<>();

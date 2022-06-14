@@ -31,10 +31,6 @@ public class CustomerRestController {
         this.jwtUtil = jwtUtil;
     }
 
-
-    //nesneyi kabul eden bir json dosyası alamız biz bu nesneye dönüştürmemiz lazım.
-
-
     //customer register !!
     @PostMapping("/save")
     public ResponseEntity save(@Valid @RequestBody Customer customer){
@@ -60,7 +56,6 @@ public class CustomerRestController {
     public ResponseEntity settings(@Valid @RequestBody CustomerSettingsAttr customerSettingsAttr){
         return customerService.settings(customerSettingsAttr);
     }
-
 
     @PostMapping("/changePassword")
     public ResponseEntity changePassword(@RequestParam String oldPwd,@RequestParam  String newPwd,

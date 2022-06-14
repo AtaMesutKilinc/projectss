@@ -19,7 +19,6 @@ public class Role {
 //
 //    @OneToMany(mappedBy = "role",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 //    List<Customer> customers;
-    //user hazırlanırken rollere gitmete çalışıyor . defaultta eagledır. circle a neden oldu .dikkate alma.
-    //biz prog ayağa kaldırdığımızda ilk etapta jwt user ı çağıracağımızdan mapped by ı buraya yazıyoruz.
+
 
 }

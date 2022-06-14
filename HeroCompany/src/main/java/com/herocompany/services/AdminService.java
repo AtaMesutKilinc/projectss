@@ -4,7 +4,7 @@ import com.herocompany.configs.Configs;
 import com.herocompany.entities.Admin;
 import com.herocompany.entities.AdminSettingsAttr;
 import com.herocompany.repositories.AdminRepository;
-import com.herocompany.utils.REnum;
+import com.herocompany.repositories.utils.REnum;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

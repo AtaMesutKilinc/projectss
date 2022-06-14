@@ -14,6 +14,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @Data
 public class Base {
+
     @CreatedBy
     private String createdBy;
 

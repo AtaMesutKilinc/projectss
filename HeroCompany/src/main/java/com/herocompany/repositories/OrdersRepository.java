@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
-    Optional<Orders> findByCustomer_IdEquals(Long id);
 
+    Optional<Orders> findByCustomer_IdEquals(Long id);
     List<Orders> findByIdIs(Long id);
 
 

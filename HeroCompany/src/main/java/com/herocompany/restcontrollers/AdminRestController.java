@@ -33,7 +33,6 @@ public class AdminRestController {
 
     }
 
-    //nesneyi kabul eden bir json dosyası alamız biz bu nesneye dönüştürmemiz lazım.
 
 
     @PostMapping("/save")
@@ -41,7 +40,7 @@ public class AdminRestController {
         return adminService.save(admin);
     }
 
-    @Cacheable("adminList")  //name'i keyi list
+    @Cacheable("adminList")
     @GetMapping("/list")
     public ResponseEntity list(){
         return adminService.list();
@@ -77,14 +76,17 @@ public class AdminRestController {
     public ResponseEntity block(@RequestParam Long id){
         return customerService.block(id);
     }
+
     @PutMapping("/unblock")
     public ResponseEntity unblock(@RequestParam Long id){
         return customerService.unblock(id);
     }
+
     @GetMapping("/getCustomer")
     public ResponseEntity getCustomer(@RequestParam Long id){
         return customerService.getCustomer(id);
     }
+
     @GetMapping("/ordersDetail")
     public ResponseEntity ordersDetail(@RequestParam Long id){
         return ordersService.ordersDetail(id);
